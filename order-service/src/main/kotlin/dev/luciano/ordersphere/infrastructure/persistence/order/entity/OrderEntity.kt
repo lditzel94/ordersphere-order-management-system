@@ -14,17 +14,18 @@ import java.util.UUID
 
 @Table(name = "orders")
 @Entity
-data class OrderEntity(
+class OrderEntity(
     @Id
-    val id: UUID,
-    val customerId: UUID,
-    val restaurantId: UUID,
-    val trackingId: UUID,
-    val price: BigDecimal,
+    var id: UUID,
+    var customerId: UUID,
+    var restaurantId: UUID,
+    var trackingId: UUID,
+    var price: BigDecimal,
     @Enumerated(EnumType.STRING)
-    val orderState: OrderState,
-    @OneToOne(mappedBy = "order", cascade = [CascadeType.ALL])
-    val address: OrderAddressEntity,
+    var orderState: OrderState,
     @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL])
-    val items: List<OrderItemEntity>,
-)
+    var items: MutableList<OrderItemEntity> = mutableListOf(),
+) {
+    @OneToOne(mappedBy = "order", cascade = [CascadeType.ALL])
+    lateinit var address: OrderAddressEntity
+}

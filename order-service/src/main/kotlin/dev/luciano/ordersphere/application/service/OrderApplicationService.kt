@@ -14,7 +14,7 @@ import org.springframework.validation.annotation.Validated
 class OrderApplicationService(
     private val orderCreationCommandHandler: OrderCreationCommandHandler,
 ) : OrderService {
-    override fun createOrder(createOrderCommand: CreateOrderCommand): Either<OrderError, CreateOrderResponse> =
+    override suspend fun createOrder(createOrderCommand: CreateOrderCommand): Either<OrderError, CreateOrderResponse> =
         orderCreationCommandHandler.handle(createOrderCommand)
 
     override fun trackOrder() {

@@ -1,22 +1,26 @@
 package dev.luciano.ordersphere.domain.entity
 
+import dev.luciano.ordersphere.configuration.logger.CompanionLogger
 import dev.luciano.ordersphere.domain.valueobject.Money
 import dev.luciano.ordersphere.domain.valueobject.OrderId
 import dev.luciano.ordersphere.domain.valueobject.OrderItemId
+import dev.luciano.ordersphere.domain.valueobject.ProductId
 
 
 data class OrderItem(
     val orderItemId: OrderItemId,
     val orderId: OrderId,
-    val product: Product,
+    val productId: ProductId,
     val quantity: Int,
     val price: Money,
     val subTotal: Money,
 ) : BaseEntity<OrderItemId>(orderItemId) {
+
+    companion object : CompanionLogger()
+
     init {
-        require(quantity > 0) { "Quantity must be greater than zero" }
-        require(price.isGreaterThanZero) { "Price must be greater than zero" }
-        require(subTotal == price.times(quantity)) { "Subtotal must equal price multiplied by quantity" }
-        require(price == product.price) { "Price must match product price" }
+        require(quantity > 0) { "Item quantity must be greater than zero" }
+        require(price.isGreaterThanZero) { "Item price must be greater than zero" }
+        require(subTotal == price.times(quantity)) { "Item subtotal must equal price multiplied by quantity" }
     }
 }

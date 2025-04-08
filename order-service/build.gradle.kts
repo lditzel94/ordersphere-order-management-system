@@ -1,12 +1,11 @@
-import org.jetbrains.kotlin.config.JvmTarget
-
-group = "dev.luciano"
-version = "1.0.0"
+group = BuildConfig.GROUP
+version = BuildConfig.VERSION
 
 plugins {
     id("common-conventions")
     id("persistence.spring-data-conventions")
     id("web.spring-web-conventions")
+    kotlin("plugin.jpa") version "1.9.25"
 }
 
 dependencies {
@@ -14,6 +13,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework:spring-tx")
     implementation(project(":common"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
 }
 
 kotlin {
@@ -40,10 +40,4 @@ tasks {
     bootBuildImage {
         imageName = "${project.group}/order.service:${project.version}"
     }
-
-//    processResources {
-//        from("src/main/resources") {
-//            include("**/*.sql")
-//        }
-//    }
 }

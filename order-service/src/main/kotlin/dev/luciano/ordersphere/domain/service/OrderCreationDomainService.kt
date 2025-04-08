@@ -24,7 +24,7 @@ class OrderCreationDomainService : OrderCreationService {
     override fun invoke(order: Order.Pending, restaurant: Restaurant): Either<OrderError, OrderCreatedEvent> = either {
         OrderCreatedEvent(order, ZonedDateTime.now(ZoneId.of(UTC)))
             .also { ensureRestaurantIsActive(restaurant) }
-            .log { info("Order with id: {} is initiated", order.orderId) }
+            .log { info("Order with id: {} is initiated", order.orderId.value) }
     }
 
     private fun Raise<OrderError>.ensureRestaurantIsActive(restaurant: Restaurant) =

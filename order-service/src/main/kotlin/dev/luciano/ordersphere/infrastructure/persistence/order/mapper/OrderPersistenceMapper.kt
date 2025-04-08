@@ -4,7 +4,6 @@ import dev.luciano.ordersphere.configuration.mapper.Mapper
 import dev.luciano.ordersphere.configuration.mapper.map
 import dev.luciano.ordersphere.domain.entity.Order
 import dev.luciano.ordersphere.domain.entity.OrderItem
-import dev.luciano.ordersphere.domain.entity.Product
 import dev.luciano.ordersphere.domain.valueobject.CustomerId
 import dev.luciano.ordersphere.domain.valueobject.Money
 import dev.luciano.ordersphere.domain.valueobject.OrderId
@@ -47,8 +46,8 @@ val orderItemEntityToOrderItem = Mapper<OrderItemEntity, OrderItem> { entity ->
     with(entity) {
         OrderItem(
             orderItemId = OrderItemId(id),
-            orderId = OrderId(order!!.id),
-            product = Product(ProductId(productId)),
+            orderId = OrderId(order.id),
+            productId = ProductId(productId),
             quantity = quantity,
             price = Money(price),
             subTotal = Money(subTotal)
@@ -64,32 +63,35 @@ val orderToOrderEntity = Mapper<Order, OrderEntity> { order ->
             customerId = customerId.value,
             restaurantId = restaurantId.value,
             trackingId = trackingId.value,
-            price = price.amount,
-            address = streetAddressToOrderAddressEntity.map(deliveryAddress),
-            items = orderItemToOrderItemEntity.map(items)
-        )
+            price = price.amount
+        ).also {
+            it.items = orderItemToOrderItemEntity(items, it)
+            it.address = streetAddressToOrderAddressEntity(deliveryAddress, it)
+        }
     }
 }
 
-val streetAddressToOrderAddressEntity = Mapper<StreetAddress, OrderAddressEntity> { address ->
+val streetAddressToOrderAddressEntity = { address: StreetAddress, orderEntity: OrderEntity ->
     with(address) {
         OrderAddressEntity(
             id = id,
             street = street,
             postalCode = postalCode,
             city = city,
+            order = orderEntity
         )
     }
 }
 
-val orderItemToOrderItemEntity = Mapper<OrderItem, OrderItemEntity> { item ->
-    with(item) {
+val orderItemToOrderItemEntity = { items: List<OrderItem>, orderEntity: OrderEntity ->
+    items.mapTo(mutableListOf()) {
         OrderItemEntity(
-            id = orderItemId.value,
-            productId = product.productId.value,
-            quantity = quantity,
-            price = price.amount,
-            subTotal = subTotal.amount
+            id = it.orderItemId.value,
+            productId = it.productId.value,
+            quantity = it.quantity,
+            price = it.price.amount,
+            subTotal = it.subTotal.amount,
+            order = orderEntity
         )
     }
 }

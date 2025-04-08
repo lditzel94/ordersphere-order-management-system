@@ -16,7 +16,7 @@ class OrderCreationCommandHandler(private val createOrder: CreateOrder) {
     companion object : CompanionLogger()
 
     @Transactional
-    fun handle(command: CreateOrderCommand): Either<OrderError, CreateOrderResponse> = either {
+    suspend fun handle(command: CreateOrderCommand): Either<OrderError, CreateOrderResponse> = either {
         createOrder(command)
             .map { orderToCreateOrderResponse.map(it.order) }
             .bind()

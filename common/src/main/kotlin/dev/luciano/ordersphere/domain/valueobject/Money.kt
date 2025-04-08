@@ -21,4 +21,17 @@ data class Money(val amount: BigDecimal) {
 
     operator fun times(multiplier: Int): Money =
         Money(amount.multiply(BigDecimal(multiplier)) setScale 2)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Money
+
+        return amount.setScale(2) == other.amount.setScale(2)
+    }
+
+    override fun hashCode(): Int {
+        return amount.hashCode()
+    }
 }

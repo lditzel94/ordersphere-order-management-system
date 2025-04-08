@@ -1,5 +1,7 @@
 package persistence
 
+val kotlinVersion: String by project
+
 plugins {
     id("common-conventions")
 }

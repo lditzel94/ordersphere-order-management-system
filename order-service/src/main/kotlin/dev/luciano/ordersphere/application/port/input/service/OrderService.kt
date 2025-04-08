@@ -7,7 +7,7 @@ import dev.luciano.ordersphere.domain.error.OrderError
 import jakarta.validation.Valid
 
 interface OrderService {
-    fun createOrder(@Valid createOrderCommand: CreateOrderCommand): Either<OrderError, CreateOrderResponse>
+    suspend fun createOrder(@Valid createOrderCommand: CreateOrderCommand): Either<OrderError, CreateOrderResponse>
 
     fun trackOrder()
 }

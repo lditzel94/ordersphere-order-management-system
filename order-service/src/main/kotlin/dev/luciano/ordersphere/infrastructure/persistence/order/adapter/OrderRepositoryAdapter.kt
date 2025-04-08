@@ -8,6 +8,9 @@ import dev.luciano.ordersphere.domain.valueobject.TrackingId
 import dev.luciano.ordersphere.infrastructure.persistence.order.mapper.orderEntityToOrder
 import dev.luciano.ordersphere.infrastructure.persistence.order.mapper.orderToOrderEntity
 import dev.luciano.ordersphere.infrastructure.persistence.order.repository.OrderJpaRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.springframework.stereotype.Component
 
 @Component
@@ -16,17 +19,21 @@ class OrderRepositoryAdapter(
 ) : OrderRepository {
     companion object : CompanionLogger()
 
-    override fun save(order: Order): Order =
-        orderJpaRepository.save(orderToOrderEntity.map(order)).let {
-            orderEntityToOrder.map(it)
-        }
+    override suspend fun save(order: Order): Order = withContext(Dispatchers.IO) {
+        orderJpaRepository
+            .save(orderToOrderEntity.map(order))
+            .let(orderEntityToOrder::map)
+    }
 
-    override fun findBy(orderId: OrderId): Order? =
+
+    override suspend fun findBy(orderId: OrderId): Order? = withContext(Dispatchers.IO) {
         orderJpaRepository.findById(orderId.value)
             .map(orderEntityToOrder::map)
             .get()
+    }
 
-    override fun findBy(trackingId: TrackingId): Order? =
+    override suspend fun findBy(trackingId: TrackingId): Order? =
         orderJpaRepository.findByTrackingId(trackingId.value)
-            ?.let { orderEntityToOrder.map(it) }
+            .map(orderEntityToOrder::map)
+            .get()
 }

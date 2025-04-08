@@ -1,6 +1,7 @@
 package dev.luciano.ordersphere.infrastructure.persistence.order.entity
 
 import jakarta.persistence.CascadeType
+import jakarta.persistence.EmbeddedId
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.IdClass
@@ -10,18 +11,20 @@ import jakarta.persistence.Table
 import java.math.BigDecimal
 import java.util.UUID
 
-@IdClass(OrderItemEntityId::class)
+//@IdClass(OrderItemEntityId::class)
 @Table(name = "order_items")
 @Entity
-data class OrderItemEntity(
+class OrderItemEntity(
+//    @EmbeddedId
+//    var id: OrderItemEntityId,
     @Id
-    val id: Long,
+    var id: Long,
     @Id
     @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "ORDER_ID")
-    val order: OrderEntity? = null,
-    val productId: UUID,
-    val price: BigDecimal,
-    val quantity: Int,
-    val subTotal: BigDecimal,
+    var order: OrderEntity,
+    var productId: UUID,
+    var price: BigDecimal,
+    var quantity: Int,
+    var subTotal: BigDecimal,
 )

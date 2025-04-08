@@ -5,5 +5,5 @@ import dev.luciano.ordersphere.domain.valueobject.ProductId
 import dev.luciano.ordersphere.domain.valueobject.RestaurantId
 
 interface RestaurantRepository {
-    fun findRestaurantInformation(restaurantId: RestaurantId, productIds: List<ProductId>): Restaurant
+    fun findRestaurantInformation(restaurantId: RestaurantId, productIds: List<ProductId>): Restaurant?
 }

@@ -10,13 +10,13 @@ import java.util.UUID
 
 @Table(name = "order_address")
 @Entity
-data class OrderAddressEntity(
+class OrderAddressEntity(
     @Id
-    val id: UUID,
+    var id: UUID,
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "ORDER_ID")
-    val order: OrderEntity? = null,
-    val street: String,
-    val postalCode: String,
-    val city: String,
+    var order: OrderEntity,
+    var street: String,
+    var postalCode: String,
+    var city: String,
 )

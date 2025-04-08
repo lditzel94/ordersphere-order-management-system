@@ -5,9 +5,9 @@ import dev.luciano.ordersphere.domain.valueobject.OrderId
 import dev.luciano.ordersphere.domain.valueobject.TrackingId
 
 interface OrderRepository {
-    fun save(order: Order): Order
+    suspend fun save(order: Order): Order
 
-    fun findBy(orderId: OrderId): Order?
+    suspend fun findBy(orderId: OrderId): Order?
 
-    fun findBy(trackingId: TrackingId): Order?
+    suspend fun findBy(trackingId: TrackingId): Order?
 }

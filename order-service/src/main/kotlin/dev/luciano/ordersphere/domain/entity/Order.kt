@@ -38,9 +38,9 @@ sealed class Order(
         }
 
     init {
-        require(price.isGreaterThanZero) { "Price must be greater than zero" }
+        require(price.isGreaterThanZero) { "Order price must be greater than zero" }
         require(items.sumOf { it.subTotal.amount } == price.amount) {
-            "The sum of item subtotals does not match the order price (${price.amount})"
+            "The sum of item subtotals does not match the order price=${price.amount}"
         }
     }
 
