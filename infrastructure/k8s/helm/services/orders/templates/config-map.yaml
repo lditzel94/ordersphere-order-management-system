@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMapName }}
+data:
+  JAVA_TOOL_OPTIONS: "{{ .Values.global.openTelemetryJavaAgent }}"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "{{ .Values.global.otelExporterEndPoint }}"
+  OTEL_METRICS_EXPORTER: "{{ .Values.global.otelMetricsExporter }}"
+  OTEL_LOGS_EXPORTER: "{{ .Values.global.otelLogsExporter }}"
+  KAFKA_BOOTSTRAP_SERVERS: "{{ .Values.global.kafkaBootstrapServers }}"
+  SPRING_DATASOURCE_URL: "{{ .Values.global.springDatasourceUrl }}"
+  TOPIC_PARTITIONS: "1"
+  TOPIC_REPLICATION_FACTOR: "1"
+  SERVER_PORT: "{{ .Values.backend.service.port }}"
