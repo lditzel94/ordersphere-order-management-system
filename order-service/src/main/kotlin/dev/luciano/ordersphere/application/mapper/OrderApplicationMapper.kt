@@ -6,6 +6,7 @@ import dev.luciano.ordersphere.application.dto.create.OrderAddress
 import dev.luciano.ordersphere.configuration.mapper.Mapper
 import dev.luciano.ordersphere.domain.entity.Order
 import dev.luciano.ordersphere.domain.entity.OrderItem
+import dev.luciano.ordersphere.domain.event.OrderCreatedEvent
 import dev.luciano.ordersphere.domain.valueobject.CustomerId
 import dev.luciano.ordersphere.domain.valueobject.Money
 import dev.luciano.ordersphere.domain.valueobject.OrderId
@@ -55,10 +56,10 @@ val orderItemsToOrderItemEntities = { items: List<CreateOrderCommand.OrderItem>,
     }
 }
 
-val orderToCreateOrderResponse = Mapper<Order, CreateOrderResponse> {
+val orderToCreateOrderResponse = Mapper<OrderCreatedEvent, CreateOrderResponse> {
     with(it) {
         CreateOrderResponse(
-            orderTrackingId = trackingId.value,
+            orderTrackingId = trackingId,
             orderState = orderState,
             message = "Order created successfully",
         )

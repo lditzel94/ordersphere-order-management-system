@@ -3,16 +3,12 @@ package dev.luciano.ordersphere.infrastructure.web
 import dev.luciano.ordersphere.application.dto.create.CreateOrderCommand
 import dev.luciano.ordersphere.application.port.input.service.OrderService
 import dev.luciano.ordersphere.configuration.logger.CompanionLogger
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
 
 @RestController
 @RequestMapping(path = ["/orders"], produces = ["application/vnd.api.v1+json"])

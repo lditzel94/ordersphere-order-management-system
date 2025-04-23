@@ -9,7 +9,7 @@ abstract class CompanionLogger {
     val log: Logger by lazy { Loggers.getLogger(javaClass.enclosingClass) }
     private val folder: String by lazy { javaClass.enclosingClass.packageName.substringAfterLast('.').uppercase() }
 
-    protected fun <T> T.log(block: Logger.(T) -> Unit): T =
+    fun <T> T.log(block: Logger.(T) -> Unit): T =
         also {
             MDC.put("folder", folder)
             MDC.put("thread", Thread.currentThread().toString())
@@ -35,7 +35,7 @@ abstract class CompanionLogger {
             fold({ l -> suspendLog { left(l) } }, { })
         }
 
-    protected suspend fun <L, R> Either<L, R>.logEither(
+    suspend fun <L, R> Either<L, R>.logEither(
         left: suspend Logger.(L) -> Unit,
         right: suspend Logger.(R) -> Unit,
     ): Either<L, R> =

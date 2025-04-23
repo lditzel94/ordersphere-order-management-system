@@ -9,7 +9,6 @@ import dev.luciano.ordersphere.infrastructure.persistence.order.mapper.orderEnti
 import dev.luciano.ordersphere.infrastructure.persistence.order.mapper.orderToOrderEntity
 import dev.luciano.ordersphere.infrastructure.persistence.order.repository.OrderJpaRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.springframework.stereotype.Component
 

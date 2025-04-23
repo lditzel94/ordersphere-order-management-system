@@ -9,7 +9,7 @@ data class CreateOrderCommand(
     val price: BigDecimal,
     val items: List<OrderItem>,
     val address: OrderAddress,
-){
+) {
     data class OrderItem(
         val productId: UUID,
         val quantity: Int,

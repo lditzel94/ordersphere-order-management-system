@@ -5,6 +5,7 @@ plugins {
     id("common-conventions")
     id("persistence.spring-data-conventions")
     id("web.spring-web-conventions")
+    id("messaging.spring-kafka-conventions")
     kotlin("plugin.jpa") version "1.9.25"
 }
 

@@ -6,9 +6,7 @@ import dev.luciano.ordersphere.domain.entity.Restaurant
 import dev.luciano.ordersphere.domain.valueobject.Money
 import dev.luciano.ordersphere.domain.valueobject.ProductId
 import dev.luciano.ordersphere.domain.valueobject.RestaurantId
-import java.math.BigDecimal
 import java.math.BigDecimal.TEN
-import java.util.UUID
 import org.springframework.stereotype.Component
 
 @Component

@@ -11,12 +11,12 @@ DROP TABLE IF EXISTS "order".orders CASCADE;
 
 CREATE TABLE "order".orders
 (
-    id uuid NOT NULL,
-    customer_id uuid NOT NULL,
-    restaurant_id uuid NOT NULL,
-    tracking_id uuid NOT NULL,
-    price numeric(10,2) NOT NULL,
-    order_state order_state NOT NULL,
+    id               uuid           NOT NULL,
+    customer_id      uuid           NOT NULL,
+    restaurant_id    uuid           NOT NULL,
+    tracking_id      uuid           NOT NULL,
+    price            numeric(10, 2) NOT NULL,
+    order_state      order_state    NOT NULL,
     failure_messages character varying COLLATE pg_catalog."default",
     CONSTRAINT orders_pkey PRIMARY KEY (id)
 );
@@ -25,12 +25,12 @@ DROP TABLE IF EXISTS "order".order_items CASCADE;
 
 CREATE TABLE "order".order_items
 (
-    id bigint NOT NULL,
-    order_id uuid NOT NULL,
-    product_id uuid NOT NULL,
-    price numeric(10,2) NOT NULL,
-    quantity integer NOT NULL,
-    sub_total numeric(10,2) NOT NULL,
+    id         bigint         NOT NULL,
+    order_id   uuid           NOT NULL,
+    product_id uuid           NOT NULL,
+    price      numeric(10, 2) NOT NULL,
+    quantity   integer        NOT NULL,
+    sub_total  numeric(10, 2) NOT NULL,
     CONSTRAINT order_items_pkey PRIMARY KEY (id, order_id)
 );
 
@@ -39,17 +39,17 @@ ALTER TABLE "order".order_items
         REFERENCES "order".orders (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE
-    NOT VALID;
+        NOT VALID;
 
 DROP TABLE IF EXISTS "order".order_address CASCADE;
 
 CREATE TABLE "order".order_address
 (
-    id uuid NOT NULL,
-    order_id uuid UNIQUE NOT NULL,
-    street character varying COLLATE pg_catalog."default" NOT NULL,
+    id          uuid                                           NOT NULL,
+    order_id    uuid UNIQUE                                    NOT NULL,
+    street      character varying COLLATE pg_catalog."default" NOT NULL,
     postal_code character varying COLLATE pg_catalog."default" NOT NULL,
-    city character varying COLLATE pg_catalog."default" NOT NULL,
+    city        character varying COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT order_address_pkey PRIMARY KEY (id, order_id)
 );
 
@@ -58,7 +58,7 @@ ALTER TABLE "order".order_address
         REFERENCES "order".orders (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE
-    NOT VALID;
+        NOT VALID;
 
 DROP TYPE IF EXISTS saga_status;
 CREATE TYPE saga_state AS ENUM ('STARTED', 'FAILED', 'SUCCEEDED', 'PROCESSING', 'COMPENSATING', 'COMPENSATED');
@@ -70,16 +70,16 @@ DROP TABLE IF EXISTS "order".payment_outbox CASCADE;
 
 CREATE TABLE "order".payment_outbox
 (
-    id uuid NOT NULL,
-    saga_id uuid NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    id           uuid                                           NOT NULL,
+    saga_id      uuid                                           NOT NULL,
+    created_at   TIMESTAMP WITH TIME ZONE                       NOT NULL,
     processed_at TIMESTAMP WITH TIME ZONE,
-    type character varying COLLATE pg_catalog."default" NOT NULL,
-    payload jsonb NOT NULL,
-    outbox_state outbox_state NOT NULL,
-    saga_state saga_state NOT NULL,
-    order_state order_state NOT NULL,
-    version integer NOT NULL,
+    type         character varying COLLATE pg_catalog."default" NOT NULL,
+    payload      jsonb                                          NOT NULL,
+    outbox_state outbox_state                                   NOT NULL,
+    saga_state   saga_state                                     NOT NULL,
+    order_state  order_state                                    NOT NULL,
+    version      integer                                        NOT NULL,
     CONSTRAINT payment_outbox_pkey PRIMARY KEY (id)
 );
 
@@ -95,16 +95,16 @@ DROP TABLE IF EXISTS "order".restaurant_approval_outbox CASCADE;
 
 CREATE TABLE "order".restaurant_approval_outbox
 (
-    id uuid NOT NULL,
-    saga_id uuid NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    id           uuid                                           NOT NULL,
+    saga_id      uuid                                           NOT NULL,
+    created_at   TIMESTAMP WITH TIME ZONE                       NOT NULL,
     processed_at TIMESTAMP WITH TIME ZONE,
-    type character varying COLLATE pg_catalog."default" NOT NULL,
-    payload jsonb NOT NULL,
-    outbox_state outbox_state NOT NULL,
-    saga_state saga_state NOT NULL,
-    order_state order_state NOT NULL,
-    version integer NOT NULL,
+    type         character varying COLLATE pg_catalog."default" NOT NULL,
+    payload      jsonb                                          NOT NULL,
+    outbox_state outbox_state                                   NOT NULL,
+    saga_state   saga_state                                     NOT NULL,
+    order_state  order_state                                    NOT NULL,
+    version      integer                                        NOT NULL,
     CONSTRAINT restaurant_approval_outbox_pkey PRIMARY KEY (id)
 );
 
@@ -120,9 +120,9 @@ DROP TABLE IF EXISTS "order".customers CASCADE;
 
 CREATE TABLE "order".customers
 (
-    id uuid NOT NULL,
-    username character varying COLLATE pg_catalog."default" NOT NULL,
+    id         uuid                                           NOT NULL,
+    username   character varying COLLATE pg_catalog."default" NOT NULL,
     first_name character varying COLLATE pg_catalog."default" NOT NULL,
-    last_name character varying COLLATE pg_catalog."default" NOT NULL,
+    last_name  character varying COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT customers_pkey PRIMARY KEY (id)
 );

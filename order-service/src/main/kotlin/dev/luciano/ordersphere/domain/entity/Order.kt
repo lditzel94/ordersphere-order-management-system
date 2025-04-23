@@ -3,6 +3,7 @@ package dev.luciano.ordersphere.domain.entity
 import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.ensure
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import dev.luciano.ordersphere.domain.error.OrderDomainError
 import dev.luciano.ordersphere.domain.error.OrderError
 import dev.luciano.ordersphere.domain.valueobject.CustomerId
@@ -19,6 +20,11 @@ import dev.luciano.ordersphere.domain.valueobject.StreetAddress
 import dev.luciano.ordersphere.domain.valueobject.TrackingId
 import java.util.UUID
 
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.DEDUCTION, // Infers subclass automatically based on fields matching the subclass
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "orderState" // Use `orderState` for identifying the type
+)
 sealed class Order(
     open val orderId: OrderId,
     val price: Money,

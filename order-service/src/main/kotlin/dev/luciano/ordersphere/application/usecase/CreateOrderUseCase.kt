@@ -4,7 +4,6 @@ import arrow.core.Either
 import arrow.core.raise.Raise
 import arrow.core.raise.catch
 import arrow.core.raise.either
-import arrow.core.raise.ensure
 import dev.luciano.ordersphere.application.dto.create.CreateOrderCommand
 import dev.luciano.ordersphere.application.mapper.createOrderCommandToOrder
 import dev.luciano.ordersphere.application.port.output.repository.CustomerRepository
@@ -20,7 +19,6 @@ import dev.luciano.ordersphere.domain.service.OrderCreationService
 import dev.luciano.ordersphere.domain.valueobject.CustomerId
 import dev.luciano.ordersphere.domain.valueobject.ProductId
 import dev.luciano.ordersphere.domain.valueobject.RestaurantId
-import dev.luciano.ordersphere.infrastructure.persistence.order.adapter.OrderRepositoryAdapter.Companion.log
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -39,12 +37,12 @@ class CreateOrderUseCase(
 
     @Transactional
     override suspend fun invoke(createOrderCommand: CreateOrderCommand): Either<OrderError, OrderCreatedEvent> = either {
-        log.info("Creating order for customerId={} with restaurantId={}", createOrderCommand.customerId, createOrderCommand.restaurantId)
+        log { info("Creating order for customerId={} with restaurantId={}", createOrderCommand.customerId, createOrderCommand.restaurantId) }
 
         ensureCustomerExists(createOrderCommand)
-        createOrder(createOrderCommand, ensureRestaurantExists(createOrderCommand))
-            .also { orderRepository.save(it.order) }
-            .log { info("Order created with id={}", it.order.orderId.value) }
+        ensureRestaurantExists(createOrderCommand)
+            .let { restaurant -> createOrder(createOrderCommand, restaurant) }
+            .log { info("Order created with id={}", it.orderId) }
     }
 
     private suspend fun Raise<OrderError>.ensureCustomerExists(createOrderCommand: CreateOrderCommand): Customer =
@@ -60,6 +58,10 @@ class CreateOrderUseCase(
     }
 
     private suspend fun Raise<OrderError>.createOrder(command: CreateOrderCommand, restaurant: Restaurant) = catch({
-        orderCreationService(createOrderCommandToOrder(command), restaurant).bind()
+        createOrderCommandToOrder(command).run {
+            orderCreationService(this, restaurant)
+                .onRight { orderRepository.save(this) }
+                .bind()
+        }
     }) { raise(OrderDomainError(it.localizedMessage)) }
 }
