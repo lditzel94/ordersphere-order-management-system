@@ -50,7 +50,7 @@ kafka:
   #        restaurant-approval-response: restaurant-approval-response
   #        customer: customer
   topic:
-    partitions: ${TOPIC_PARTITIONS:3}
+    partitions: ${TOPIC_PARTITIONS:1}
     replicas: ${TOPIC_REPLICATION_FACTOR:1}
 
 
