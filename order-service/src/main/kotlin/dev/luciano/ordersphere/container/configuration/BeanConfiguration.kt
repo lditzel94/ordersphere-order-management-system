@@ -14,21 +14,21 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class BeanConfiguration {
+open class BeanConfiguration {
 
     @Bean
-    fun orderCreationService(): OrderCreationService = OrderCreationDomainService()
+    open fun orderCreationService(): OrderCreationService = OrderCreationDomainService()
 
     @Bean
-    fun payOrderService(): OrderPaymentService =
+    open fun payOrderService(): OrderPaymentService =
         OrderPaymentDomainService()
 
     @Bean
-    fun approveOrderService(): OrderApprovalService = OrderApprovalDomainService()
+    open fun approveOrderService(): OrderApprovalService = OrderApprovalDomainService()
 
     @Bean
-    fun cancelOrderPaymentService(): OrderPaymentCancellationService = OrderPaymentCancellationDomainService()
+    open fun cancelOrderPaymentService(): OrderPaymentCancellationService = OrderPaymentCancellationDomainService()
 
     @Bean
-    fun cancelOrderService(): OrderCancellationService = OrderCancellationDomainService()
+    open fun cancelOrderService(): OrderCancellationService = OrderCancellationDomainService()
 }

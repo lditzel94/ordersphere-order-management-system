@@ -3,12 +3,14 @@ kind: Service
 metadata:
   name: {{ .Chart.Name }}-svc
   namespace: default
+  labels:
+    app: orders
 spec:
   selector:
     app: {{ .Chart.Name }}
   type: {{ .Values.backend.service.type }}
   ports:
-    - name: http
+    - name: order-service-port
       protocol: TCP
       port: {{ .Values.backend.service.port }}
       targetPort: {{ .Values.backend.service.targetPort }}

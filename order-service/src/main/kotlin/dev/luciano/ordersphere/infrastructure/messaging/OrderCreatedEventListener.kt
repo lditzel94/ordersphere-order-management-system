@@ -11,7 +11,7 @@ class OrderCreatedEventListener {
 
     @KafkaListener(
         topics = ["\${kafka.event.topic.order.created}"],
-        groupId = "order.processing.group",
+        groupId = "\${kafka.event.group.order-processing}",
     )
     fun listen(message: OrderCreatedEvent) {
         log { info("Order created event consumed: {}", message) }

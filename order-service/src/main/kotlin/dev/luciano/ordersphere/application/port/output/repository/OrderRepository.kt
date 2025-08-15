@@ -1,6 +1,6 @@
 package dev.luciano.ordersphere.application.port.output.repository
 
-import dev.luciano.ordersphere.domain.entity.Order
+import dev.luciano.ordersphere.domain.entity.order.Order
 import dev.luciano.ordersphere.domain.valueobject.OrderId
 import dev.luciano.ordersphere.domain.valueobject.TrackingId
 

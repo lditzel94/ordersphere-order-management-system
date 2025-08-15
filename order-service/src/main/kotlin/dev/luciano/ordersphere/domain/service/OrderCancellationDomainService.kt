@@ -3,8 +3,8 @@ package dev.luciano.ordersphere.domain.service
 import arrow.core.Either
 import arrow.core.raise.either
 import dev.luciano.ordersphere.configuration.logger.CompanionLogger
-import dev.luciano.ordersphere.domain.entity.Order
-import dev.luciano.ordersphere.domain.entity.cancel
+import dev.luciano.ordersphere.domain.entity.order.Order
+import dev.luciano.ordersphere.domain.entity.order.cancel
 import dev.luciano.ordersphere.domain.error.OrderError
 
 fun interface OrderCancellationService {

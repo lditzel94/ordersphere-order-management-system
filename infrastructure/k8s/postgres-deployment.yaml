@@ -15,7 +15,7 @@ spec:
         app: postgres-deployment
     spec:
       containers:
-        - name: postgres-deployment
+        - name: postgres
           image: postgres:latest
           imagePullPolicy: IfNotPresent
           env:

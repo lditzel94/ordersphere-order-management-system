@@ -9,22 +9,24 @@ import dev.luciano.ordersphere.application.port.output.message.publisher.OrderCr
 import dev.luciano.ordersphere.application.usecase.CreateOrder
 import dev.luciano.ordersphere.configuration.logger.CompanionLogger
 import dev.luciano.ordersphere.domain.error.OrderError
+import dev.luciano.ordersphere.domain.event.OrderCreatedEvent
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
-class OrderCreationCommandHandler(
+open class OrderCreationCommandHandler(
     private val createOrder: CreateOrder,
-    private val publisher: OrderCreatedEventPublisher
+    private val saga: OrderCreationSagaOrchestrator,
 ) {
     companion object : CompanionLogger()
 
     @Transactional
-    suspend fun handle(command: CreateOrderCommand): Either<OrderError, CreateOrderResponse> = either {
+    open suspend fun handle(command: CreateOrderCommand): Either<OrderError, CreateOrderResponse> = either {
         createOrder(command)
-            .onRight { publisher.publish(it) }
+            .onRight { saga.start(it) }
             .map { orderToCreateOrderResponse.map(it) }
             .bind()
+
 
         //TODO: Implement outbox message
     }

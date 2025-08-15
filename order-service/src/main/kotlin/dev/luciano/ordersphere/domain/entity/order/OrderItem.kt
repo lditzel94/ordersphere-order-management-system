@@ -1,6 +1,7 @@
-package dev.luciano.ordersphere.domain.entity
+package dev.luciano.ordersphere.domain.entity.order
 
 import dev.luciano.ordersphere.configuration.logger.CompanionLogger
+import dev.luciano.ordersphere.domain.entity.BaseEntity
 import dev.luciano.ordersphere.domain.valueobject.Money
 import dev.luciano.ordersphere.domain.valueobject.OrderId
 import dev.luciano.ordersphere.domain.valueobject.OrderItemId

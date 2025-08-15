@@ -2,7 +2,7 @@ package dev.luciano.ordersphere.infrastructure.persistence.order.adapter
 
 import dev.luciano.ordersphere.application.port.output.repository.OrderRepository
 import dev.luciano.ordersphere.configuration.logger.CompanionLogger
-import dev.luciano.ordersphere.domain.entity.Order
+import dev.luciano.ordersphere.domain.entity.order.Order
 import dev.luciano.ordersphere.domain.valueobject.OrderId
 import dev.luciano.ordersphere.domain.valueobject.TrackingId
 import dev.luciano.ordersphere.infrastructure.persistence.order.mapper.orderEntityToOrder

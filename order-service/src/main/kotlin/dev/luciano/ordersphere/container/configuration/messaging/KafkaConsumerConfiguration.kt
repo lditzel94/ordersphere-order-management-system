@@ -18,14 +18,14 @@ import org.springframework.util.backoff.FixedBackOff
 
 @Configuration
 @EnableKafka
-class KafkaConsumerConfiguration {
+open class KafkaConsumerConfiguration {
     companion object : CompanionLogger()
 
     @Value("\${spring.kafka.bootstrap-servers}")
     private lateinit var bootstrapServers: String
 
     @Bean
-    fun consumerFactory(): ConsumerFactory<String, Any> {
+    open fun consumerFactory(): ConsumerFactory<String, Any> {
         val props = mapOf(
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrapServers,
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to ErrorHandlingDeserializer::class.java,
@@ -33,14 +33,13 @@ class KafkaConsumerConfiguration {
             ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS to StringDeserializer::class.java,
             ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS to JsonDeserializer::class.java,
             JsonDeserializer.TRUSTED_PACKAGES to "*",
-            JsonDeserializer.USE_TYPE_INFO_HEADERS to true,
         )
 
         return DefaultKafkaConsumerFactory(props)
     }
 
     @Bean
-    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
+    open fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, Any>()
         factory.consumerFactory = consumerFactory()
         return factory

@@ -2,12 +2,18 @@ package dev.luciano.ordersphere.infrastructure.persistence.order.mapper
 
 import dev.luciano.ordersphere.configuration.mapper.Mapper
 import dev.luciano.ordersphere.configuration.mapper.map
-import dev.luciano.ordersphere.domain.entity.Order
-import dev.luciano.ordersphere.domain.entity.OrderItem
+import dev.luciano.ordersphere.domain.entity.order.OpenOrder
+import dev.luciano.ordersphere.domain.entity.order.Order
+import dev.luciano.ordersphere.domain.entity.order.OrderItem
 import dev.luciano.ordersphere.domain.valueobject.CustomerId
 import dev.luciano.ordersphere.domain.valueobject.Money
 import dev.luciano.ordersphere.domain.valueobject.OrderId
 import dev.luciano.ordersphere.domain.valueobject.OrderItemId
+import dev.luciano.ordersphere.domain.valueobject.OrderState.APPROVED
+import dev.luciano.ordersphere.domain.valueobject.OrderState.CANCELLED
+import dev.luciano.ordersphere.domain.valueobject.OrderState.CANCELLING
+import dev.luciano.ordersphere.domain.valueobject.OrderState.PAID
+import dev.luciano.ordersphere.domain.valueobject.OrderState.PENDING
 import dev.luciano.ordersphere.domain.valueobject.ProductId
 import dev.luciano.ordersphere.domain.valueobject.RestaurantId
 import dev.luciano.ordersphere.domain.valueobject.StreetAddress
@@ -18,16 +24,30 @@ import dev.luciano.ordersphere.infrastructure.persistence.order.entity.OrderItem
 
 val orderEntityToOrder = Mapper<OrderEntity, Order> { entity ->
     with(entity) {
-        Order.from(
-            orderState = orderState,
-            orderId = OrderId(id),
-            customerId = CustomerId(customerId),
-            restaurantId = RestaurantId(restaurantId),
-            trackingId = TrackingId(trackingId),
-            orderPrice = Money(price),
-            deliveryAddress = addressEntityToStreetAddress.map(address),
-            orderItems = orderItemEntityToOrderItem.map(items)
-        )
+        when (orderState) {
+            PENDING, PAID, APPROVED -> Order.create {
+                open(
+                    orderId = OrderId(id),
+                    customerId = CustomerId(customerId),
+                    restaurantId = RestaurantId(restaurantId),
+                    trackingId = TrackingId(trackingId),
+                    price = Money(price),
+                    deliveryAddress = addressEntityToStreetAddress.map(address),
+                    items = orderItemEntityToOrderItem.map(items),
+                    orderState = orderState
+                )
+            }
+
+            CANCELLING, CANCELLED -> Order.create {
+                closed(
+                    orderId = OrderId(id),
+                    customerId = CustomerId(customerId),
+                    price = Money(price),
+                    orderState = orderState,
+                    cancellationReason = "Order cancelled"
+                )
+            }
+        }
     }
 }
 
@@ -56,10 +76,10 @@ val orderItemEntityToOrderItem = Mapper<OrderItemEntity, OrderItem> { entity ->
 }
 
 val orderToOrderEntity = Mapper<Order, OrderEntity> { order ->
-    with(order) {
+    with(order as OpenOrder) {
         OrderEntity(
             id = orderId.value,
-            orderState = orderState,
+            orderState = state,
             customerId = customerId.value,
             restaurantId = restaurantId.value,
             trackingId = trackingId.value,

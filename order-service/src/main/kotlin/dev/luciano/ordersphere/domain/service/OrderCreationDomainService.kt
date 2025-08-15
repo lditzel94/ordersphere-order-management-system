@@ -5,23 +5,24 @@ import arrow.core.raise.Raise
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import dev.luciano.ordersphere.configuration.logger.CompanionLogger
-import dev.luciano.ordersphere.domain.entity.Order
 import dev.luciano.ordersphere.domain.entity.Restaurant
+import dev.luciano.ordersphere.domain.entity.order.OpenOrder
 import dev.luciano.ordersphere.domain.error.OrderDomainError
 import dev.luciano.ordersphere.domain.error.OrderError
 import dev.luciano.ordersphere.domain.event.OrderCreatedEvent
 
 fun interface OrderCreationService {
-    operator fun invoke(order: Order.Pending, restaurant: Restaurant): Either<OrderError, OrderCreatedEvent>
+    operator fun invoke(order: OpenOrder, restaurant: Restaurant): Either<OrderError, OrderCreatedEvent>
 }
 
 class OrderCreationDomainService : OrderCreationService {
     companion object : CompanionLogger()
 
-    override fun invoke(order: Order.Pending, restaurant: Restaurant): Either<OrderError, OrderCreatedEvent> = either {
-        OrderCreatedEvent.from(order)
-            .also { ensureRestaurantIsActive(restaurant) }
-            .log { info("Order with id: {} is initiated", order.orderId.value) }
+    override fun invoke(order: OpenOrder, restaurant: Restaurant): Either<OrderError, OrderCreatedEvent> = either {
+        with(order) {
+            OrderCreatedEvent(orderId.value, trackingId.value, state)
+        }.also { ensureRestaurantIsActive(restaurant) }
+            .log { info("Order with id: {} initiated", order.orderId.value) }
     }
 
     private fun Raise<OrderError>.ensureRestaurantIsActive(restaurant: Restaurant) =

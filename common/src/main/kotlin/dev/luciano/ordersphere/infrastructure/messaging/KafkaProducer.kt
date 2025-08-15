@@ -10,10 +10,10 @@ import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
 
 @Component
-class KafkaProducer<T>(val kafkaTemplate: KafkaTemplate<String, T>) {
+class KafkaProducer(val kafkaTemplate: KafkaTemplate<String, Any>) {
     companion object : CompanionLogger()
 
-    final suspend inline fun <reified E : Error> send(
+    final suspend inline fun <reified T : Any, E : Error> send(
         key: String,
         event: T,
         topic: String,
@@ -27,7 +27,7 @@ class KafkaProducer<T>(val kafkaTemplate: KafkaTemplate<String, T>) {
         }
     }.logEither(
         left = { error("Error producing message: {}", it.message()) },
-        right = { info("Topic:{} produced with message:{}", topic, event) }
+        right = { info("Topic {} produced with message:{}", topic, event) }
     )
 
     @PreDestroy

@@ -1,8 +1,11 @@
-package dev.luciano.ordersphere.infrastructure.web
+package dev.luciano.ordersphere.infrastructure.web.rest
 
 import dev.luciano.ordersphere.application.dto.create.CreateOrderCommand
 import dev.luciano.ordersphere.application.port.input.service.OrderService
 import dev.luciano.ordersphere.configuration.logger.CompanionLogger
+import dev.luciano.ordersphere.infrastructure.web.FailureResponse
+import dev.luciano.ordersphere.infrastructure.web.RestResponse
+import dev.luciano.ordersphere.infrastructure.web.SuccessResponse
 import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

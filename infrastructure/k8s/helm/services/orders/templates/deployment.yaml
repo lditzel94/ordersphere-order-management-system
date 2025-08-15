@@ -2,9 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.deploymentName }}
-  namespace: default
-  labels:
-    app: {{ .Chart.Name }}
 spec:
   replicas: {{ .Values.backend.replicaCount }}
   selector:
@@ -20,7 +17,7 @@ spec:
           image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
           ports:
             - containerPort: {{ .Values.backend.service.port }}
-              protocol: TCP
+{{/*              protocol: TCP*/}}
           resources:
             limits:
               cpu: "500m"

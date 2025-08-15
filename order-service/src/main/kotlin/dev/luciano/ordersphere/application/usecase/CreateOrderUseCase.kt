@@ -12,6 +12,7 @@ import dev.luciano.ordersphere.application.port.output.repository.RestaurantRepo
 import dev.luciano.ordersphere.configuration.logger.CompanionLogger
 import dev.luciano.ordersphere.domain.entity.Customer
 import dev.luciano.ordersphere.domain.entity.Restaurant
+import dev.luciano.ordersphere.domain.entity.order.OpenOrder
 import dev.luciano.ordersphere.domain.error.OrderDomainError
 import dev.luciano.ordersphere.domain.error.OrderError
 import dev.luciano.ordersphere.domain.event.OrderCreatedEvent
@@ -27,7 +28,7 @@ fun interface CreateOrder {
 }
 
 @Component
-class CreateOrderUseCase(
+open class CreateOrderUseCase(
     private val orderCreationService: OrderCreationService,
     private val orderRepository: OrderRepository,
     private val customerRepository: CustomerRepository,
@@ -45,11 +46,11 @@ class CreateOrderUseCase(
             .log { info("Order created with id={}", it.orderId) }
     }
 
-    private suspend fun Raise<OrderError>.ensureCustomerExists(createOrderCommand: CreateOrderCommand): Customer =
+    private fun Raise<OrderError>.ensureCustomerExists(createOrderCommand: CreateOrderCommand): Customer =
         customerRepository.findBy(CustomerId(createOrderCommand.customerId))
             ?: raise(OrderDomainError("Customer with id=${createOrderCommand.customerId} does not exist"))
 
-    private suspend fun Raise<OrderError>.ensureRestaurantExists(createOrderCommand: CreateOrderCommand): Restaurant {
+    private fun Raise<OrderError>.ensureRestaurantExists(createOrderCommand: CreateOrderCommand): Restaurant {
         val restaurantId = RestaurantId(createOrderCommand.restaurantId)
         val productIds = createOrderCommand.items.map { ProductId(it.productId) }
 
@@ -58,9 +59,9 @@ class CreateOrderUseCase(
     }
 
     private suspend fun Raise<OrderError>.createOrder(command: CreateOrderCommand, restaurant: Restaurant) = catch({
-        createOrderCommandToOrder(command).run {
-            orderCreationService(this, restaurant)
-                .onRight { orderRepository.save(this) }
+        createOrderCommandToOrder.map(command).let { order ->
+            orderCreationService(order as OpenOrder, restaurant)
+                .onRight { orderRepository.save(order) }
                 .bind()
         }
     }) { raise(OrderDomainError(it.localizedMessage)) }
